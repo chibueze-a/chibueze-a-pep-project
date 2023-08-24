@@ -121,7 +121,7 @@ public class SocialMediaController {
     }
 
     private Account createAcc( Account potentialAcc){
-       return accountDAO.createAcc(potentialAcc);
+       return accountService.createAcc(potentialAcc);
     }
 
     private boolean isValidAcc(Account potentialAcc){
@@ -140,11 +140,11 @@ public class SocialMediaController {
 
     private boolean existingAcc(String username){
         
-        return accountDAO.existingAcc(username);
+        return accountService.existingAcc(username);
     }
 
     private boolean verifiedAcc(Account potentialAcc){
-        return accountDAO.verifiedAcc(potentialAcc);
+        return accountService.verifiedAcc(potentialAcc);
 
     }
 
