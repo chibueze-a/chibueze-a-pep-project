@@ -6,15 +6,15 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import Model.Account;
 import Model.Message;
+import Service.AccountService;
+import Service.AccountServiceImpl;
 
 import java.io.IOException;
 import java.util.List;
 
 import DAO.AccountDAO;
-import DAO.AccountDAOUtil;
 import DAO.MessageDAO;
 import DAO.MessageDAOUtil;
-import Util.ConnectionUtil;
 
 
 
@@ -24,6 +24,15 @@ import Util.ConnectionUtil;
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 public class SocialMediaController {
+
+    private final AccountService accountService;
+    private final MessageService messageService;
+    //private final AccountDAO accountDAO;
+
+    public SocialMediaController(AccountService accountService, MessageService messageService){
+        this.accountService = accountService;
+        this.messageService = messageService;
+    }
 
     
     /**
@@ -56,8 +65,8 @@ public class SocialMediaController {
         Account potentialAcc = jsonData(requestBody);
 
         if (isValidAcc(potentialAcc)){
-            if(!existingAcc(potentialAcc.getUsername())){
-                Account createdAcc = createAcc(potentialAcc);
+            if(!accountService.existingAcc(potentialAcc.getUsername())){
+                Account createdAcc = accountService.createAcc(potentialAcc);
                 context.json(createdAcc).status(200);
             }
             else{
@@ -75,7 +84,7 @@ public class SocialMediaController {
         Account potentialAcc = jsonData(requestBody);
 
         if (isValidAcc(potentialAcc)){
-            if(verifiedAcc(potentialAcc)){
+            if(accountService.verifiedAcc(potentialAcc)){
                 context.json(potentialAcc).status(200);
             }
             else{
@@ -88,11 +97,11 @@ public class SocialMediaController {
         }
     }
 
-    private final AccountDAO accountDAO;
+   
 
-    public SocialMediaController(AccountDAO accountDAO){
-        this.accountDAO = accountDAO;
-    }
+  //  public SocialMediaController(AccountDAO accountDAO){
+  //      this.accountDAO = accountDAO;
+  //  }
 
     private Account jsonData(String json){
         
