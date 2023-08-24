@@ -199,5 +199,78 @@ public class MessageDAOUtil implements MessageDAO {
     
         
     } 
+    @Override
+    public boolean updateMessage(int message_id, String newMessageText) {
+        Connection connection = ConnectionUtil.getConnection();
+        String sql = "UPDATE message SET message_text = ? WHERE message_id = ?";
+        PreparedStatement statement = null;
     
+        try {
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, newMessageText);
+            statement.setInt(2, message_id);
+            int rowData = statement.executeUpdate();
+            return rowData > 0;
+        } 
+        catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } 
+        finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } 
+                catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        //
+    }
+
+    @Override
+    public List<Message> getAllMessagesFromUser(int accountId) {
+        Connection connection = ConnectionUtil.getConnection();
+        String sql = "SELECT * FROM message WHERE posted_by = ?";
+        List<Message> messages = new ArrayList<>();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+    
+        try {
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, accountId);
+            resultSet = statement.executeQuery();
+    
+            while (resultSet.next()) {
+                int message_id = resultSet.getInt("message_id");
+                int posted_by = resultSet.getInt("posted_by");
+                String message_text = resultSet.getString("message_text");
+                long time_posted_epoch = resultSet.getLong("time_posted_epoch");
+    
+                Message message = new Message(message_id, posted_by, message_text, time_posted_epoch);
+                messages.add(message);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally { 
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    
+        return messages;
+    }
+
 }

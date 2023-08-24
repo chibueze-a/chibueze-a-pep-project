@@ -38,7 +38,8 @@ public class SocialMediaController {
         app.get("/messages", this::getAllMessagesHandler);
         app.get("/messages/:message_id", this::getMessageByIdHandler);
         app.delete("/messages/:message_id", this::deleteMessageHandler);
-
+        app.patch("/messages/:message_id", this::updateMessageHandler);
+        app.get("/accounts/:account_id/messages", this::getAllMessagesFromUserHandler);
         return app;
     }
 
@@ -107,7 +108,7 @@ public class SocialMediaController {
 
     }
 
-    private boolean createAcc( Account potentialAcc){
+    private Account createAcc( Account potentialAcc){
        return accountDAO.createAcc(potentialAcc);
     }
 
@@ -170,5 +171,39 @@ public class SocialMediaController {
             context.result("").status(200);
         }
     }
+
+    private void updateMessageHandler(Context context){
+
+        int messageId = Integer.parseInt(context.pathParam("message_id"));
+
+        String requestBody = context.body();
+
+        if (isValidMessageText(requestBody)) {
+            if (messageDAO.updateMessage(messageId, requestBody)) {
+                Message updatedMessage = messageDAO.getMessageById(messageId);
+                context.json(updatedMessage).status(200);
+            } else {
+                context.status(400);
+            }
+        } else {
+            context.status(400);
+        }
+
+
+
+    }
+
+    private boolean isValidMessageText(String messageText) {
+       
+        return messageText != null && !messageText.isEmpty() && messageText.length() <= 255;
+    }
+
+    private void getAllMessagesFromUserHandler(Context context) {
+        int accountId = Integer.parseInt(context.pathParam("account_id"));
+        List<Message> messages = messageDAO.getAllMessagesFromUser(accountId);
+        context.json(messages);
+    }
+
+
 
 }

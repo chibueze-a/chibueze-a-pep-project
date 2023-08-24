@@ -4,7 +4,7 @@ import Model.Account;
 
 public interface AccountDAO {
     
-    boolean createAcc(Account potentialAcc);
+    Account createAcc(Account potentialAcc);
     
     boolean verifiedAcc (Account potentntialAcc);
     

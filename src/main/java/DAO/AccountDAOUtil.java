@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public class AccountDAOUtil implements AccountDAO {
     @Override
 
-    public boolean createAcc( Account potentialAcc){
+    public Account createAcc( Account potentialAcc){
         Connection connection = ConnectionUtil.getConnection();
         PreparedStatement statement = null;
 
@@ -22,15 +22,20 @@ public class AccountDAOUtil implements AccountDAO {
             statement.setString(2, potentialAcc.getPassword());
 
             int rowData = statement.executeUpdate();
-            return rowData > 0;
-
+            
+            if (rowData > 0 ){
+                return potentialAcc;
+            }
+            else{
+                return null;
+            }
 
         } 
         catch (SQLException e) {
             e.printStackTrace();
 
-            //return a boolean(false) otherwise
-            return false; 
+            //return null otherwise
+            return null; 
         }
         finally{
             if (statement != null ){
@@ -136,4 +141,8 @@ public class AccountDAOUtil implements AccountDAO {
             }
         }
     }
+
+    
+
+
 }
