@@ -14,22 +14,22 @@ public class AccountServiceImpl implements AccountService{
 
     }
 
-@Override
-public Account createAcc(Account potentialAcc){
+    @Override
+    public Account createAcc(Account potentialAcc){
 
     return accountDAO.createAcc(potentialAcc);
-}
+    }
 
-@Override
-public boolean verifiedAcc(Account potentialAcc){
+    @Override
+    public boolean verifiedAcc(Account potentialAcc){
 
-    return accountDAO.verifiedAcc(potentialAcc);
-}
+        return accountDAO.verifiedAcc(potentialAcc);
+    }
 
-@Override
-public boolean existingAcc(String username){
+    @Override
+    public boolean existingAcc(String username){
 
-    return accountDAO.existingAcc(username);
-}
+        return accountDAO.existingAcc(username);
+    }
 
 }
