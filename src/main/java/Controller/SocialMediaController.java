@@ -145,7 +145,6 @@ public class SocialMediaController {
         System.out.println(messageId);
 
         // Retrieve the message from your service using the provided messageId
-        // You can replace MessageService with your actual service class
         Message message = messageService.getMessageById(messageId);
 
         if (message != null) {
@@ -164,7 +163,7 @@ public class SocialMediaController {
             context.status(200);
         } catch (Exception e) {
             e.printStackTrace();
-            context.status(200);
+            context.status(00);
         }
     }
 
