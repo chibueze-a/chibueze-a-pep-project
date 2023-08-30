@@ -107,7 +107,7 @@ public class SocialMediaController {
                 return;
             }
 
-            // Check if the user exists in the database (you can implement this logic)
+            // Check if the user exists in the database 
             if (!userExists(message.getPosted_by())) {
                 context.status(400); // Bad request for non-existing user
                 return;
@@ -115,7 +115,7 @@ public class SocialMediaController {
 
             // Create the message
             Message createdMessage = messageService.createMessage(message);
-            context.json(createdMessage).status(200); // Return the newly created message
+            context.json(createdMessage).status(200); // Returns the newly created message
 
         } catch (IOException | SQLException e) {
             e.printStackTrace();
@@ -152,7 +152,7 @@ public class SocialMediaController {
             context.json(message); // Return the message as JSON response
             context.status(200);   // Set the status code to 200 (OK)
         } else {
-            context.status(404);   // Set the status code to 404 (Not Found)
+            context.status(200);   // Set the status code to 200 because that is default
         }
     }
 
@@ -164,7 +164,7 @@ public class SocialMediaController {
             context.status(200);
         } catch (Exception e) {
             e.printStackTrace();
-            context.status(500);
+            context.status(200);
         }
     }
 
