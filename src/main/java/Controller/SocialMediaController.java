@@ -83,12 +83,24 @@ public class SocialMediaController {
 
     private void loginUser(Context context) {
         try {
-            Account account = objectMapper.readValue(context.body(), Account.class);
+            String requestBody = context.body();
+            if (requestBody == null || requestBody.isEmpty()) {
+                context.status(400); // Bad Request
+                return;
+            }
+
+            Account account = objectMapper.readValue(requestBody, Account.class);
             boolean loginSuccess = accountService.verifyLogin(account.getUsername(), account.getPassword());
-            context.status(loginSuccess ? 200 : 401);
-        } catch (IOException e) {
+
+            if (loginSuccess) {
+                Account loggedInAccount = accountService.getAccountByUsername(account.getUsername());
+                context.status(200).json(loggedInAccount); // OK
+            } else {
+                context.status(401); // Unauthorized
+            }
+        } catch (IOException | SQLException e) {
             e.printStackTrace();
-            context.status(400);
+            context.status(400); // Bad Request
         }
     }
 
@@ -156,7 +168,7 @@ public class SocialMediaController {
     }
 
 
-    private void deleteMessage(Context context) {
+   /*  private void deleteMessage(Context context) {
         int messageId = Integer.parseInt(context.pathParam("{message_id}"));
         try {
             messageService.deleteMessage(messageId);
@@ -166,7 +178,19 @@ public class SocialMediaController {
             context.status(00);
         }
     }
+*/
 
+    private void deleteMessage(Context context) throws SQLException {
+        int messageId = Integer.parseInt(context.pathParam("{message_id}"));
+        Message deletedMessage = messageService.getMessageById(messageId);
+        if (deletedMessage == null){
+            context.status(200);
+        }
+        else {
+            messageService.deleteMessage(messageId);
+            context.status(200).json(deletedMessage);
+        }
+    }
     private void updateMessage(Context context) {
         int messageId = Integer.parseInt(context.pathParam("message_id"));
         String requestBody = context.body();
